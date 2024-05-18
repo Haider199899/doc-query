@@ -1,0 +1,5 @@
+openai==0.2.8
+streamlit==1.34.0
+dotenv==1.0.1
+requests==2.31.0
+PyMuPDF==1.24.4
