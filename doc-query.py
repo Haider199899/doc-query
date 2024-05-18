@@ -1,5 +1,5 @@
 import streamlit as st
-import openai
+from openai import OpenAI
 import fitz  # PyMuPDF
 import requests
 import os
@@ -10,7 +10,8 @@ from pathlib import Path
 load_dotenv()
 
 # Set your OpenAI API key
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
 
 # Directory to save uploaded PDFs
 UPLOAD_DIR = Path("uploaded-docs")
@@ -33,15 +34,11 @@ def extract_text_from_pdf(pdf_path):
 
 # Function to query OpenAI GPT-4
 def query_openai(prompt):
-    response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": prompt}
-        ],
-        max_tokens=150
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}]
     )
-    return response['choices'][0]['message']['content'].strip()
+    return response.choices[0].message.content.strip()
 
 # Function to search in a public dataset (Wikipedia API as an example)
 def search_wikipedia(query):
